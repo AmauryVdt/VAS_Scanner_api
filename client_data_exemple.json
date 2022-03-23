@@ -1,0 +1,20 @@
+[
+	{
+	"uuid":"8a8d66a5-246d-4625-ba4f-80989cbdebc1",
+	"last_name":"Doe",
+	"first_name":"Jhon",
+	"phone_number":"0666666666",
+	"email":"jhon.doe@gmail.com",
+	"place_number":1,
+	"scan_count":0
+	},
+	{
+		"uuid":"8a8d66a5-246d-4625-ba4f-80989cbdebc1",
+		"last_name":"Blow",
+		"first_name":"Joe",
+		"phone_number":"0777777777",
+		"email":"joe.nlow@gmail.com",
+		"place_number":2,
+		"scan_count":0
+	}
+]
