@@ -18,7 +18,8 @@ const PORT = process.env.PORT || 5000
 
 // Connection to the database
 mongoose.connect(MONGO_URI)
-    .then((result) => app.listen(PORT, _ => {console.log(`Server is running in http://localhost:${PORT}`)}))
+    .then((result) => app.listen(PORT, '0.0.0.0'))
+    .then(_ => {console.log(`Server is running in 149.202.49.98:${PORT}`)})
     .catch((err) => console.log(Error))
 
 app.use(express.json())
