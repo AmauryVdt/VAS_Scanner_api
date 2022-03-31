@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const client = require('../schemas/client')
+const Client = require('../schemas/client')
 const { uuidv4 } = require('uuidv4');
 const utils = require("./utils");
 
@@ -10,7 +10,7 @@ router.get('/', (request, response) => {
     utils.logUser(request, response)
         .catch(err => { return response.status(404).json({ message: 'Internal Server Error.' }) })
 
-    client.find({}, (err, client) => {
+    Client.find({}, (err, client) => {
         if (err) return response.status(401).json({ message: 'Error. Can\'t find client' })
         console.log(client)
         return response.status(200).json(client)
@@ -23,7 +23,7 @@ router.get('/:clientID', (request, response) => {
     utils.logUser(request, response)
         .catch(err => { return response.status(404).json({ message: 'Internal Server Error.' }) })
 
-    client.findOne({ uuid: request.params.clientID }).then(client => response.send(client))
+    Client.findOne({ uuid: request.params.clientID }).then(client => response.send(client))
 })
 
 router.post('/', (request, response) => {
@@ -47,7 +47,7 @@ router.post('/', (request, response) => {
     }
 
     // Create object
-    const new_client = new client({
+    const new_client = new Client({
         uuid:           uuid,
         last_name:      last_name,
         first_name:     first_name,
@@ -67,21 +67,28 @@ router.post('/', (request, response) => {
         })
 })
 
-router.put('/scan/:clientID', async (request, response) => {
+router.post('/scan/:clientID', async (request, response) => {
 
     //Check authentication
     utils.logUser(request, response)
         .catch(err => { return response.status(404).json({ message: 'Internal Server Error.' }) })
 
-    client.findByIdAndUpdate(
-        request.params.id,
-        request.body,
-        {new: true},
-        (err, client) => {
-            if (err) return request.status(500).send(err)
-            response.send(client)
-        }
-    )
+    // Find the client
+    let current_client
+    try {
+        current_client = await Client.findOne({ uuid: request.params.clientID})
+        if (!current_client) return response.status(401).json({ message: 'Error. Can\'t find client' })
+    }
+    catch (err) {
+        return response.status(401).json({ message: 'Error. Can\'t find client' })
+    }
+
+    // Update the client & save
+    current_client.scan_count += 1;
+    await current_client.save();
+
+    // Return response
+    await response.status(200).json({ message: "The client has bee updated", client: current_client })
 })
 
 module.exports = router

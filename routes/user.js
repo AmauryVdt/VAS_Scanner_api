@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const jwt = require('jsonwebtoken')
 const accessTokenSecret = 'wtfunsuperaccesstokenincroyable';
-const user = require('../schemas/user')
+const User = require('../schemas/user')
 const utils = require('./utils')
 
 router.post('/login', async (request, response) => {
@@ -16,7 +16,7 @@ router.post('/login', async (request, response) => {
     const { login, password } = request.body
 
     // Find the user
-    user.findOne({ login: login, password: password }, (err, result) => {
+    User.findOne({ login: login, password: password }, (err, result) => {
         // Error
         if (err) return response.status(404).json({ message: 'Error. The server was unable to find what was requested' })
 
@@ -43,7 +43,7 @@ router.post('/login', async (request, response) => {
 //         .catch(err => { return response.status(404).json({ message: 'Internal Server Error.' }) })
 //
 //     // console.log(request.params.userID)
-//     user.findOne({ uuid: request.params.userID }).then(user => response.send(user)).catch(err => response.send(err))
+//     User.findOne({ uuid: request.params.userID }).then(user => response.send(user)).catch(err => response.send(err))
 // })
 
 
